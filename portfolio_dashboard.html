@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simon's Portfolio Dashboard 🔥</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #ff6b35, #f7931e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .portfolio-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .portfolio-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .portfolio-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #ff6b35;
+        }
+        
+        .portfolio-title {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        
+        .portfolio-value {
+            font-size: 1.3em;
+            color: #4ade80;
+        }
+        
+        .stock-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: background-color 0.2s;
+        }
+        
+        .stock-row:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+        
+        .stock-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .stock-symbol {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        .stock-name {
+            color: #a0a0a0;
+            font-size: 0.9em;
+        }
+        
+        .stock-price {
+            text-align: right;
+        }
+        
+        .current-price {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        .price-change {
+            font-size: 0.9em;
+        }
+        
+        .positive {
+            color: #4ade80;
+        }
+        
+        .negative {
+            color: #ef4444;
+        }
+        
+        .summary-section {
+            grid-column: 1 / -1;
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .summary-card {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        
+        .summary-card h3 {
+            color: #ff6b35;
+            margin-bottom: 10px;
+        }
+        
+        .summary-card .value {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        
+        .refresh-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(45deg, #ff6b35, #f7931e);
+            border: none;
+            border-radius: 50px;
+            padding: 15px 25px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+            transition: transform 0.2s;
+        }
+        
+        .refresh-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .last-updated {
+            text-align: center;
+            color: #a0a0a0;
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+        
+        @media (max-width: 768px) {
+            .portfolio-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Portfolio Dashboard 🔥</h1>
+        <p>Real-time tracking for Simon's investments</p>
+    </div>
+    
+    <div class="portfolio-container">
+        <!-- Portfolio 1 -->
+        <div class="portfolio-section">
+            <div class="portfolio-header">
+                <div class="portfolio-title">Main Portfolio</div>
+                <div class="portfolio-value" id="portfolio1-value">$0.00</div>
+            </div>
+            <div id="portfolio1-stocks"></div>
+        </div>
+        
+        <!-- Portfolio 2 -->
+        <div class="portfolio-section">
+            <div class="portfolio-header">
+                <div class="portfolio-title">Portfolio 2</div>
+                <div class="portfolio-value" id="portfolio2-value">$0.00</div>
+            </div>
+            <div id="portfolio2-stocks">
+                <p style="text-align: center; color: #a0a0a0; padding: 20px;">
+                    Waiting for Portfolio 2 data...
+                </p>
+            </div>
+        </div>
+        
+        <!-- Summary Section -->
+        <div class="summary-section">
+            <h2 style="text-align: center; margin-bottom: 25px; color: #ff6b35;">Portfolio Summary</h2>
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <h3>Total Value</h3>
+                    <div class="value positive" id="total-value">$0.00</div>
+                </div>
+                <div class="summary-card">
+                    <h3>Today's Change</h3>
+                    <div class="value" id="daily-change">$0.00 (0.00%)</div>
+                </div>
+                <div class="summary-card">
+                    <h3>Best Performer</h3>
+                    <div class="value" id="best-performer">-</div>
+                </div>
+                <div class="summary-card">
+                    <h3>Total Positions</h3>
+                    <div class="value" id="total-positions">0</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <button class="refresh-btn" onclick="refreshData()">🔄 Refresh</button>
+    
+    <div class="last-updated" id="last-updated">
+        Last updated: Never
+    </div>
+
+    <script>
+        // Portfolio data from screenshot
+        const portfolio1 = [
+            { symbol: 'NVDA', name: 'NVIDIA Corporation', price: 139.13, change: 0.83, shares: 0 },
+            { symbol: 'TSLA', name: 'Tesla Inc', price: 413.30, change: 5.93, shares: 0 },
+            { symbol: 'AAPL', name: 'Apple Inc', price: 229.87, change: 0.52, shares: 0 },
+            { symbol: 'GOOGL', name: 'Alphabet Inc', price: 186.86, change: 1.15, shares: 0 },
+            { symbol: 'AMZN', name: 'Amazon.com Inc', price: 215.16, change: 0.60, shares: 0 },
+            { symbol: 'MSFT', name: 'Microsoft Corporation', price: 423.49, change: 0.61, shares: 0 }
+        ];
+        
+        const portfolio2 = []; // Will be populated when you provide the second portfolio data
+        
+        function renderPortfolio(stocks, containerId, valueId) {
+            const container = document.getElementById(containerId);
+            const valueElement = document.getElementById(valueId);
+            
+            let html = '';
+            let totalValue = 0;
+            
+            stocks.forEach(stock => {
+                const changeClass = stock.change >= 0 ? 'positive' : 'negative';
+                const changeSign = stock.change >= 0 ? '+' : '';
+                
+                html += `
+                    <div class="stock-row">
+                        <div class="stock-info">
+                            <div class="stock-symbol">${stock.symbol}</div>
+                            <div class="stock-name">${stock.name}</div>
+                        </div>
+                        <div class="stock-price">
+                            <div class="current-price">$${stock.price.toFixed(2)}</div>
+                            <div class="price-change ${changeClass}">${changeSign}${stock.change.toFixed(2)}%</div>
+                        </div>
+                    </div>
+                `;
+                
+                totalValue += stock.price * (stock.shares || 1); // Default to 1 share if not specified
+            });
+            
+            container.innerHTML = html;
+            valueElement.textContent = `$${totalValue.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+            
+            return totalValue;
+        }
+        
+        function updateSummary() {
+            const total1 = renderPortfolio(portfolio1, 'portfolio1-stocks', 'portfolio1-value');
+            const total2 = renderPortfolio(portfolio2, 'portfolio2-stocks', 'portfolio2-value');
+            
+            const totalValue = total1 + total2;
+            document.getElementById('total-value').textContent = `$${totalValue.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+            
+            // Calculate daily change (simplified - would need previous day data for accuracy)
+            let dailyChange = 0;
+            let changePercent = 0;
+            [...portfolio1, ...portfolio2].forEach(stock => {
+                dailyChange += (stock.price * (stock.change / 100)) * (stock.shares || 1);
+            });
+            
+            changePercent = totalValue > 0 ? (dailyChange / totalValue) * 100 : 0;
+            
+            const changeElement = document.getElementById('daily-change');
+            const changeClass = dailyChange >= 0 ? 'positive' : 'negative';
+            const changeSign = dailyChange >= 0 ? '+' : '';
+            changeElement.textContent = `${changeSign}$${Math.abs(dailyChange).toFixed(2)} (${changeSign}${changePercent.toFixed(2)}%)`;
+            changeElement.className = `value ${changeClass}`;
+            
+            // Best performer
+            const allStocks = [...portfolio1, ...portfolio2];
+            const bestStock = allStocks.reduce((best, stock) => 
+                stock.change > best.change ? stock : best, 
+                allStocks[0] || { symbol: 'N/A', change: 0 }
+            );
+            document.getElementById('best-performer').textContent = bestStock.symbol ? `${bestStock.symbol} (+${bestStock.change.toFixed(2)}%)` : 'N/A';
+            
+            // Total positions
+            document.getElementById('total-positions').textContent = allStocks.length;
+            
+            // Last updated
+            document.getElementById('last-updated').textContent = `Last updated: ${new Date().toLocaleString()}`;
+        }
+        
+        function refreshData() {
+            // In a real implementation, this would fetch live data from an API
+            // For now, we'll just update the timestamp
+            document.getElementById('last-updated').textContent = `Last updated: ${new Date().toLocaleString()}`;
+            
+            // Add a brief loading animation
+            const btn = document.querySelector('.refresh-btn');
+            const originalText = btn.textContent;
+            btn.textContent = '🔄 Updating...';
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.disabled = false;
+                updateSummary();
+            }, 1000);
+        }
+        
+        // Initialize dashboard
+        updateSummary();
+        
+        // Auto-refresh every 5 minutes
+        setInterval(refreshData, 300000);
+    </script>
+</body>
+</html>
