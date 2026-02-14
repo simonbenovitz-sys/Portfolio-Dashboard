@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simon's Portfolio Dashboard 🔥</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #ff6b35, #f7931e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .portfolio-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .portfolio-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .portfolio-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #ff6b35;
+        }
+        
+        .portfolio-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .portfolio-value {
+            font-size: 1.3em;
+            color: #4ade80;
+        }
+        
+        .etrade-icon {
+            background: #1f4e79;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8em;
+        }
+        
+        .fidelity-icon {
+            background: #00653a;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8em;
+        }
+        
+        .stock-row {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: 15px;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: background-color 0.2s;
+        }
+        
+        .stock-row:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+        
+        .stock-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .stock-symbol {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        .stock-details {
+            color: #a0a0a0;
+            font-size: 0.9em;
+        }
+        
+        .stock-price {
+            text-align: right;
+        }
+        
+        .current-price {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        .market-value {
+            color: #a0a0a0;
+            font-size: 0.9em;
+        }
+        
+        .price-change {
+            text-align: right;
+            font-size: 0.9em;
+        }
+        
+        .positive {
+            color: #4ade80;
+        }
+        
+        .negative {
+            color: #ef4444;
+        }
+        
+        .cash-position {
+            background: rgba(255, 171, 0, 0.1);
+            border: 1px solid rgba(255, 171, 0, 0.3);
+            border-radius: 8px;
+            padding: 10px;
+            margin: 5px 0;
+        }
+        
+        .summary-section {
+            grid-column: 1 / -1;
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .summary-card {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        
+        .summary-card h3 {
+            color: #ff6b35;
+            margin-bottom: 10px;
+        }
+        
+        .summary-card .value {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        
+        .refresh-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(45deg, #ff6b35, #f7931e);
+            border: none;
+            border-radius: 50px;
+            padding: 15px 25px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+            transition: transform 0.2s;
+        }
+        
+        .refresh-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .last-updated {
+            text-align: center;
+            color: #a0a0a0;
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+        
+        @media (max-width: 768px) {
+            .portfolio-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .stock-row {
+                grid-template-columns: 1fr;
+                gap: 5px;
+            }
+            
+            .stock-price {
+                text-align: left;
+            }
+            
+            .price-change {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Portfolio Dashboard 🔥</h1>
+        <p>Real-time tracking for Simon's investments</p>
+    </div>
+    
+    <div class="portfolio-container">
+        <!-- E*Trade Portfolio -->
+        <div class="portfolio-section">
+            <div class="portfolio-header">
+                <div class="portfolio-title">
+                    <span class="etrade-icon">E*TRADE</span>
+                    E*Trade Portfolio
+                </div>
+                <div class="portfolio-value" id="etrade-value">$8,341.59</div>
+            </div>
+            <div id="etrade-stocks">
+                <div class="stock-row">
+                    <div class="stock-info">
+                        <div class="stock-symbol">ADMA</div>
+                        <div class="stock-details">100 shares • Avg: $15.76</div>
+                    </div>
+                    <div class="stock-price">
+                        <div class="current-price">$15.26</div>
+                        <div class="market-value">$1,526.50</div>
+                    </div>
+                    <div class="price-change positive">+4.27%</div>
+                </div>
+                
+                <div class="stock-row">
+                    <div class="stock-info">
+                        <div class="stock-symbol">MINA</div>
+                        <div class="stock-details">72 shares • Avg: $16.42</div>
+                    </div>
+                    <div class="stock-price">
+                        <div class="current-price">$16.61</div>
+                        <div class="market-value">$1,196.21</div>
+                    </div>
+                    <div class="price-change positive">+5.15%</div>
+                </div>
+                
+                <div class="stock-row">
+                    <div class="stock-info">
+                        <div class="stock-symbol">NVDA</div>
+                        <div class="stock-details">15 shares • Avg: $179.23</div>
+                    </div>
+                    <div class="stock-price">
+                        <div class="current-price">$183.90</div>
+                        <div class="market-value">$2,758.50</div>
+                    </div>
+                    <div class="price-change negative">-1.63%</div>
+                </div>
+                
+                <div class="stock-row">
+                    <div class="stock-info">
+                        <div class="stock-symbol">PHAT</div>
+                        <div class="stock-details">109 shares • Avg: $17.39</div>
+                    </div>
+                    <div class="stock-price">
+                        <div class="current-price">$12.33</div>
+                        <div class="market-value">$1,269.99</div>
+                    </div>
+                    <div class="price-change positive">+2.58%</div>
+                </div>
+                
+                <div class="stock-row">
+                    <div class="stock-info">
+                        <div class="stock-symbol">VST</div>
+                        <div class="stock-details">7 shares • Avg: $174.20</div>
+                    </div>
+                    <div class="stock-price">
+                        <div class="current-price">$170.06</div>
+                        <div class="market-value">$1,190.39</div>
+                    </div>
+                    <div class="price-change positive">+4.26%</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Fidelity Portfolio -->
+        <div class="portfolio-section">
+            <div class="portfolio-header">
+                <div class="portfolio-title">
+                    <span class="fidelity-icon">FIDELITY</span>
+                    Fidelity Portfolio
+                </div>
+                <div class="portfolio-value" id="fidelity-value">$7,148.69</div>
+            </div>
+            <div id="fidelity-stocks">
+                <div class="stock-row">
+                    <div class="stock-info">
+                        <div class="stock-symbol">GOOG</div>
+                        <div class="stock-details">7 shares • Avg: $198.00</div>
+                    </div>
+                    <div class="stock-price">
+                        <div class="current-price">$196.86</div>
+                        <div class="market-value">$2,144.48</div>
+                    </div>
+                    <div class="price-change negative">-0.96%</div>
+                </div>
+                
+                <div class="stock-row">
+                    <div class="stock-info">
+                        <div class="stock-symbol">RMED</div>
+                        <div class="stock-details">58,024 shares • Avg: $5.63</div>
+                    </div>
+                    <div class="stock-price">
+                        <div class="current-price">$9.74</div>
+                        <div class="market-value">$332.82</div>
+                    </div>
+                    <div class="price-change positive">+1.87%</div>
+                </div>
+                
+                <div class="stock-row">
+                    <div class="stock-info">
+                        <div class="stock-symbol">MRNA</div>
+                        <div class="stock-details">42,707 shares • Avg: $46.17</div>
+                    </div>
+                    <div class="stock-price">
+                        <div class="current-price">$49.69</div>
+                        <div class="market-value">$1,064.16</div>
+                    </div>
+                    <div class="price-change positive">+0.83%</div>
+                </div>
+                
+                <div class="stock-row">
+                    <div class="stock-info">
+                        <div class="stock-symbol">TJG</div>
+                        <div class="stock-details">100 shares • Avg: $9.40</div>
+                    </div>
+                    <div class="stock-price">
+                        <div class="current-price">$9.67</div>
+                        <div class="market-value">$967.00</div>
+                    </div>
+                    <div class="price-change positive">+1.04%</div>
+                </div>
+                
+                <div class="cash-position">
+                    <div class="stock-row">
+                        <div class="stock-info">
+                            <div class="stock-symbol">SPAXX</div>
+                            <div class="stock-details">Cash Position</div>
+                        </div>
+                        <div class="stock-price">
+                            <div class="current-price">$2,640.23</div>
+                            <div class="market-value">Available Cash</div>
+                        </div>
+                        <div class="price-change">💵</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Summary Section -->
+        <div class="summary-section">
+            <h2 style="text-align: center; margin-bottom: 25px; color: #ff6b35;">Portfolio Summary</h2>
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <h3>Total Value</h3>
+                    <div class="value positive">$15,989.25</div>
+                </div>
+                <div class="summary-card">
+                    <h3>Today's Change</h3>
+                    <div class="value positive">+$306.26</div>
+                </div>
+                <div class="summary-card">
+                    <h3>Total Gain/Loss</h3>
+                    <div class="value negative">-$584.92 (-3.53%)</div>
+                </div>
+                <div class="summary-card">
+                    <h3>Best Performer</h3>
+                    <div class="value positive">MINA (+5.15%)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <button class="refresh-btn" onclick="refreshData()">🔄 Refresh</button>
+    
+    <div class="last-updated" id="last-updated">
+        Last updated: Just now
+    </div>
+
+    <script>
+        function refreshData() {
+            // Add a brief loading animation
+            const btn = document.querySelector('.refresh-btn');
+            const originalText = btn.textContent;
+            btn.textContent = '🔄 Updating...';
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.disabled = false;
+                document.getElementById('last-updated').textContent = `Last updated: ${new Date().toLocaleString()}`;
+            }, 1000);
+        }
+        
+        // Auto-refresh every 5 minutes
+        setInterval(() => {
+            document.getElementById('last-updated').textContent = `Last updated: ${new Date().toLocaleString()}`;
+        }, 300000);
+    </script>
+</body>
+</html>
