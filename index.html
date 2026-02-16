@@ -145,17 +145,31 @@
             text-align: right;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 6px;
+        }
+        
+        .change-row {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .change-label {
+            font-size: 0.75em;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
         .day-change {
             font-size: 0.9em;
-            font-weight: 500;
+            font-weight: 600;
         }
         
         .total-change {
-            font-size: 0.85em;
-            opacity: 0.9;
+            font-size: 0.9em;
+            font-weight: 500;
         }
         
         .positive {
@@ -501,8 +515,14 @@
                             <div class="market-value">$${marketValue.toLocaleString('en-US', {minimumFractionDigits: 2})}</div>
                         </div>
                         <div class="stock-changes">
-                            <div class="day-change ${dayChangeClass}">${daySign}$${Math.abs(dayChange).toFixed(2)} (${daySign}${dayChangePercent.toFixed(2)}%)</div>
-                            <div class="total-change ${totalChangeClass}">${totalSign}$${Math.abs(totalGainLoss).toFixed(2)} (${totalSign}${totalGainLossPercent.toFixed(2)}%)</div>
+                            <div class="change-row">
+                                <span class="change-label">Today:</span>
+                                <span class="day-change ${dayChangeClass}">${daySign}$${Math.abs(dayChange).toFixed(2)} (${daySign}${dayChangePercent.toFixed(2)}%)</span>
+                            </div>
+                            <div class="change-row">
+                                <span class="change-label">Total:</span>
+                                <span class="total-change ${totalChangeClass}">${totalSign}$${Math.abs(totalGainLoss).toFixed(2)} (${totalSign}${totalGainLossPercent.toFixed(2)}%)</span>
+                            </div>
                         </div>
                     </div>
                 `;
