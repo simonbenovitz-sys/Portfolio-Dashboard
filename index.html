@@ -141,6 +141,23 @@
             font-size: 0.9em;
         }
         
+        .stock-changes {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .day-change {
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+        
+        .total-change {
+            font-size: 0.85em;
+            opacity: 0.9;
+        }
+        
         .positive {
             color: #4ade80;
         }
@@ -459,9 +476,16 @@
                 if (!data) return;
                 
                 const marketValue = data.price * holding.shares;
+                const costBasis = holding.avgCost * holding.shares;
+                const totalGainLoss = marketValue - costBasis;
+                const totalGainLossPercent = costBasis > 0 ? (totalGainLoss / costBasis) * 100 : 0;
                 const dayChange = data.change * holding.shares;
-                const changeClass = data.changePercent >= 0 ? 'positive' : 'negative';
-                const changeSign = data.changePercent >= 0 ? '+' : '';
+                const dayChangePercent = data.changePercent;
+                
+                const dayChangeClass = dayChange >= 0 ? 'positive' : 'negative';
+                const totalChangeClass = totalGainLoss >= 0 ? 'positive' : 'negative';
+                const daySign = dayChange >= 0 ? '+' : '';
+                const totalSign = totalGainLoss >= 0 ? '+' : '';
                 
                 totalValue += marketValue;
                 portfolioChange += dayChange;
@@ -476,7 +500,10 @@
                             <div class="current-price">$${data.price.toFixed(2)}</div>
                             <div class="market-value">$${marketValue.toLocaleString('en-US', {minimumFractionDigits: 2})}</div>
                         </div>
-                        <div class="price-change ${changeClass}">${changeSign}${data.changePercent.toFixed(2)}%</div>
+                        <div class="stock-changes">
+                            <div class="day-change ${dayChangeClass}">${daySign}$${Math.abs(dayChange).toFixed(2)} (${daySign}${dayChangePercent.toFixed(2)}%)</div>
+                            <div class="total-change ${totalChangeClass}">${totalSign}$${Math.abs(totalGainLoss).toFixed(2)} (${totalSign}${totalGainLossPercent.toFixed(2)}%)</div>
+                        </div>
                     </div>
                 `;
             });
