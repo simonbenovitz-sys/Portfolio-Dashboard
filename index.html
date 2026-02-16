@@ -331,7 +331,7 @@
         
         const fidelityHoldings = [
             { symbol: 'GOOG', shares: 7, avgCost: 318.00 },
-            { symbol: 'MNKD', shares: 58034, avgCost: 5.83 },
+            { symbol: 'MNKD', shares: 53.034, avgCost: 5.83 },
             { symbol: 'MRNA', shares: 42.707, avgCost: 46.17 },
             { symbol: 'TIC', shares: 100, avgCost: 9.40 }
         ];
@@ -470,7 +470,7 @@
                     <div class="stock-row">
                         <div class="stock-info">
                             <div class="stock-symbol">${holding.symbol}</div>
-                            <div class="stock-details">${holding.shares.toLocaleString()} shares • Avg: $${holding.avgCost.toFixed(2)}</div>
+                            <div class="stock-details">${holding.shares.toFixed(holding.shares % 1 === 0 ? 0 : 3)} shares • Avg: $${holding.avgCost.toFixed(2)}</div>
                         </div>
                         <div class="stock-price">
                             <div class="current-price">$${data.price.toFixed(2)}</div>
